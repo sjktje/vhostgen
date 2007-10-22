@@ -150,8 +150,6 @@ load_config_file(const char *file_name, struct config_list *clist)
 	char  line[MAX_BUFF];
 	char  option;
 	char *value;
-	char *p;
-	char *q;
 
 	if ((fp = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Couldn't open configuration file %s\n", file_name);
@@ -162,7 +160,7 @@ load_config_file(const char *file_name, struct config_list *clist)
 		if (line[0] == '#') /* Ignore comments */
 			continue;
 
-		if ((p = strchr(line, '\n')) != NULL) { /* Got huge line, ignore it. */
+		if (strchr(line, '\n') != NULL) { /* Got huge line, ignore it. */
 			fprintf(stderr, "Got huge config line. This can't be right, please "
 				"fix your config.\n");
 			exit(1);
@@ -171,13 +169,11 @@ load_config_file(const char *file_name, struct config_list *clist)
 		if (*line == '\0')
 			continue;
 
-		p = line;
-	
-		if ((q = strchr(p, ':'))) {
-			option = *p;
-			value = q+1;
-		} else
-			continue; /* or print error */
+		if (line[2] == ':') {
+			option = *line;
+			value = line+2;
+		} else {
+			fprintf(stderr, "Invalid line in config file:\n%s", line);
 
 		switch(option) {
 		case 'u':
@@ -197,6 +193,10 @@ load_config_file(const char *file_name, struct config_list *clist)
 			break;
 		case 't':
 			chk_alloc_mem(clist->vhosttable, value);
+			break;
+		default:
+			fprintf(stderr, "Invalid option '%c' given.", option);
+			exit(1);
 			break;
 		}	
 	}
