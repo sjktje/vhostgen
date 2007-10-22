@@ -161,8 +161,11 @@ load_config_file(const char *file_name, struct config_list *clist)
 		if (line[0] == '#') /* Ignore comments */
 			continue;
 
-		if ((p = strchr(line, '\n')) != NULL) /* Got huge line, ignore it. */
-			*p = '\0';
+		if ((p = strchr(line, '\n')) != NULL) { /* Got huge line, ignore it. */
+			fprintf(stderr, "Got huge config line. This can't be right, please "
+				"fix your config.");
+			exit(1);
+		}
 
 		if (*line == '\0')
 			continue;
