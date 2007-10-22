@@ -147,7 +147,8 @@ load_config_file(const char *file_name, struct config_list *clist)
 {
 	FILE *fp;
 	char  line[MAX_BUFF];
-	char *argv[2];
+	char  option;
+	char *value;
 	char *p;
 	char *q;
 
@@ -169,30 +170,29 @@ load_config_file(const char *file_name, struct config_list *clist)
 		p = line;
 	
 		if ((q = strchr(p, ':'))) {
-			argv[0] = p;
-			*q = '\0';
-			argv[1] = q+1;
+			option = *p;
+			value = q+1;
 		} else
 			continue; /* or print error */
 
-		switch(argv[0][0]) {
+		switch(option) {
 		case 'u':
-			chk_alloc_mem(clist->username, argv[1]);
+			chk_alloc_mem(clist->username, value);
 			break;
 		case 'p':
-			chk_alloc_mem(clist->password, argv[1]);
+			chk_alloc_mem(clist->password, value);
 			break;
 		case 'o':
-			chk_alloc_mem(clist->outfile, argv[1]);
+			chk_alloc_mem(clist->outfile, value);
 			break;
 		case 'h':
-			chk_alloc_mem(clist->host, argv[1]);
+			chk_alloc_mem(clist->host, value);
 			break;
 		case 'd':
-			chk_alloc_mem(clist->db, argv[1]);
+			chk_alloc_mem(clist->db, value);
 			break;
 		case 't':
-			chk_alloc_mem(clist->vhosttable, argv[1]);
+			chk_alloc_mem(clist->vhosttable, value);
 			break;
 		}	
 	}
