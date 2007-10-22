@@ -228,7 +228,7 @@ char
 		exit(1);
 	}
 
-	strlcpy(our_date, buf, strlen(buf) + 1);
+	strcpy(our_date, buf);
 
 	return our_date;
 }
