@@ -1,0 +1,21 @@
+CC =		@CC@
+CFLAGS =	@CFLAGS@ @CPPFLAGS@ @DEFS@
+LDFLAGS =	@LDFLAGS@ @LIBS@ @MYSQL_LIBS@
+INCLUDE =	@MYSQL_CFLAGS@
+PREFIX =	@prefix@
+BINDIR =	$(PREFIX)/bin
+OBJS = vhostgen.o @LIBOBJS@
+
+all: vhostgen
+
+vhostgen :		$(OBJS)
+				$(CC) -o $@ $(OBJS) $(LDFLAGS) 
+vhostgen.o :	vhostgen.c
+				$(CC) $(CFLAGS) $(INCLUDE) -c vhostgen.c
+install :
+				$(INSTALL) -d -m 0750 vhostgen $(BINDIR)/vhostgen
+				$(INSTALL) -d -m 0750 vhostgen.conf $(PREFIX)/etc/vhostgen.conf
+clean :
+				-rm vhostgen vhostgen.o
+distclean :
+				-rm vhostgen vhostgen.o Makefile config.log config.h.in configure 
