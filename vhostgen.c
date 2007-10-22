@@ -129,6 +129,18 @@ main(int argc, char *argv[])
 	return(0);
 }
 
+void
+chk_alloc_mem(char *dest, char *from)
+{
+	dest = malloc(strlen(from) + 1);
+	if (dest == NULL) {
+		printf("ERROR: Couldn't allocate memory\n");
+		exit(1);
+	}
+	
+	strcpy(dest, from);
+}
+
 int
 load_config_file(const char *file_name, struct config_list *clist)
 {
@@ -167,62 +179,22 @@ load_config_file(const char *file_name, struct config_list *clist)
 
 		switch(argv[0][0]) {
 		case 'u':
-			clist->username = malloc(strlen(argv[1]) + 1);
-			if (clist->username == NULL) {
-				printf("ERROR: Couldn't allocate memory\n");
-				exit(1);
-			}
-			
-			strlcpy(clist->username, argv[1], strlen(argv[1]) + 1);
+			chk_alloc_mem(clist->username, argv[1]);
 			break;
 		case 'p':
-			clist->password = malloc(strlen(argv[1]) + 1);
-			if (clist->password == NULL) {
-				printf("ERROR: Couldn't allocate memory\n");
-				exit(1);
-			}
-
-			strlcpy(clist->password, argv[1], strlen(argv[1]) + 1);
+			chk_alloc_mem(clist->password, argv[1]);
 			break;
 		case 'o':
-			clist->outfile = malloc(strlen(argv[1]) + 1);
-
-			if (clist->outfile == NULL) {
-				printf("ERROR: Couldn't allocate memory\n");
-				exit(1);
-			}
-			
-			strlcpy(clist->outfile, argv[1], strlen(argv[1]) + 1);
+			chk_alloc_mem(clist->outfile, argv[1]);
 			break;
 		case 'h':
-			clist->host = malloc(strlen(argv[1]) + 1);
-
-			if (clist->host == NULL) {
-				printf("ERROR: Couldn't allocate memory\n");
-				exit(1);
-			}
-
-			strlcpy(clist->host, argv[1], strlen(argv[1]) + 1);
+			chk_alloc_mem(clist->host, argv[1]);
 			break;
 		case 'd':
-			clist->db = malloc(strlen(argv[1]) + 1);
-
-			if (clist->db == NULL) {
-				printf("ERROR: Couldn't allocate memory\n");
-				exit(1);
-			}
-
-			strlcpy(clist->db, argv[1], strlen(argv[1]) + 1);
+			chk_alloc_mem(clist->db, argv[1]);
 			break;
 		case 't':
-			clist->vhosttable = malloc(strlen(argv[1]) + 1);
-
-			if (clist->vhosttable == NULL) {
-				printf("ERROR: Couldn't allocate memory\n");
-				exit(1);
-			}
-
-			strlcpy(clist->vhosttable, argv[1], strlen(argv[1]) + 1);
+			chk_alloc_mem(clist->vhosttable, argv[1]);
 			break;
 		}	
 	}
