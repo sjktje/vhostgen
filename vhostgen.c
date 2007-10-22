@@ -131,16 +131,16 @@ main(int argc, char *argv[])
 }
 
 void
-chk_alloc_mem(char *dest, char *from)
+chk_alloc_mem(char **dest, char *from)
 {
-	dest = malloc(strlen(from) + 1);
-	if (dest == NULL) {
+	*dest = malloc(strlen(from) + 1);
+	if (*dest == NULL) {
 		printf("ERROR: Couldn't allocate memory\n");
 		exit(1);
 	}
 	
 	printf("%s\n", from);
-	strcpy(dest, from);
+	strcpy(*dest, from);
 }
 
 int
@@ -172,27 +172,27 @@ load_config_file(const char *file_name, struct config_list *clist)
 		if (line[2] == ':') {
 			option = *line;
 			value = line+2;
-		} else {
+		} else
 			fprintf(stderr, "Invalid line in config file:\n%s", line);
 
 		switch(option) {
 		case 'u':
-			chk_alloc_mem(clist->username, value);
+			chk_alloc_mem(&clist->username, value);
 			break;
 		case 'p':
-			chk_alloc_mem(clist->password, value);
+			chk_alloc_mem(&clist->password, value);
 			break;
 		case 'o':
-			chk_alloc_mem(clist->outfile, value);
+			chk_alloc_mem(&clist->outfile, value);
 			break;
 		case 'h':
-			chk_alloc_mem(clist->host, value);
+			chk_alloc_mem(&clist->host, value);
 			break;
 		case 'd':
-			chk_alloc_mem(clist->db, value);
+			chk_alloc_mem(&clist->db, value);
 			break;
 		case 't':
-			chk_alloc_mem(clist->vhosttable, value);
+			chk_alloc_mem(&clist->vhosttable, value);
 			break;
 		default:
 			fprintf(stderr, "Invalid option '%c' given.", option);
