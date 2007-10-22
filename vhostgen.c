@@ -147,8 +147,7 @@ load_config_file(const char *file_name, struct config_list *clist)
 {
 	FILE *fp;
 	char  line[MAX_BUFF];
-	char *argv[MAX_BUFF];
-	int   argc;
+	char *argv[2];
 	char *p;
 	char *q;
 
@@ -168,15 +167,13 @@ load_config_file(const char *file_name, struct config_list *clist)
 			continue;
 
 		p = line;
-		argc = 0;
 	
-		for (q = strchr(p, ':'); q; q = strchr(p, ':')) {
-			argv[argc++] = p;
+		if ((q = strchr(p, ':'))) {
+			argv[0] = p;
 			*q = '\0';
-			p = q+1;
-		}
-
-		argv[argc++] = p;
+			argv[1] = q+1;
+		} else
+			continue; /* or print error */
 
 		switch(argv[0][0]) {
 		case 'u':
