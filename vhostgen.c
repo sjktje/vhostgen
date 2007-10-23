@@ -100,7 +100,7 @@ main(int argc, char *argv[])
 			 * writing. If not we're screwed.
 			 */
 			if ((out = fopen(clist->outfile, "w")) == NULL) {
-				fprintf(stderr, "ERROR: %s could not be opened for writing", clist->outfile);
+				fprintf(stderr, "ERROR: %s could not be opened for writing\n", clist->outfile);
 				exit(1);
 			}
 
@@ -196,7 +196,7 @@ load_config_file(const char *file_name, struct config_list *clist)
 			chk_alloc_mem(&clist->vhosttable, value);
 			break;
 		default:
-			fprintf(stderr, "Invalid option '%c' given.", option);
+			fprintf(stderr, "Invalid option '%c' given.\n", option);
 			exit(1);
 			break;
 		}
