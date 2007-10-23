@@ -166,7 +166,7 @@ load_config_file(const char *file_name, struct config_list *clist)
 			exit(1);
 		}
 
-		if (*line == '\0')
+		if (*line == '\0' || *line == '\n')
 			continue;
 
 		if (line[2] == ':') {
