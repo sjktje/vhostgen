@@ -37,7 +37,7 @@ struct config_list {
 int load_config_file(const char *, struct config_list *);
 char *mkdate(void);
 
-int 
+int
 main(int argc, char *argv[])
 {
 	MYSQL		 sql_conn;
@@ -72,12 +72,12 @@ main(int argc, char *argv[])
 
 	/*
 	 * Since mysql_query doesn't support printf's %s/%d/whatever format, we'll
-	 * have to craft the exact SELECT message with snprintf first, and then send 
+	 * have to craft the exact SELECT message with snprintf first, and then send
 	 * that to mysql_query. snprintf wants the length of the string, so we start
 	 * of by getting that.
 	 */
 	qlen = strlen("SELECT * FROM ") + strlen(clist->vhosttable) + 1;
-	
+
 	/* Next we allocate enough memory for our sql query. */
 	query = malloc(sizeof(char) * qlen);
 
@@ -89,13 +89,13 @@ main(int argc, char *argv[])
 
 	res = mysql_query(&sql_conn, query);
 
-	if (res) 
+	if (res)
 		fprintf(stderr, "SELECT error: %s\n", mysql_error(&sql_conn));
 	else {
 		res_ptr = mysql_use_result(&sql_conn);
 		if (res_ptr) {
-			/* 
-			 * Alright, we've got stuff from the database. Now we need to write it 
+			/*
+			 * Alright, we've got stuff from the database. Now we need to write it
 			 * to the vhost config file. Let's see if we can open the config file for
 			 * writing. If not we're screwed.
 			 */
@@ -110,13 +110,13 @@ main(int argc, char *argv[])
 
 			while ((sqlrow = mysql_fetch_row(res_ptr))) {
 				if (sqlrow[2] && *sqlrow[2] != '\0')
-					fprintf(out,"# %d - %s (%s), maintained by %s\n", 
+					fprintf(out,"# %d - %s (%s), maintained by %s\n",
 						atoi(sqlrow[0]), sqlrow[1], sqlrow[2], sqlrow[4]);
-				else 
-					fprintf(out, "\n# %d - %s, maintained by %s\n", 
+				else
+					fprintf(out, "\n# %d - %s, maintained by %s\n",
 						atoi(sqlrow[0]), sqlrow[1], sqlrow[4]);
 				fprintf(out, "<VirtualHost *>\n\tServerName %s\n", sqlrow[1]);
-				if (sqlrow[2] && *sqlrow[2] != '\0') 
+				if (sqlrow[2] && *sqlrow[2] != '\0')
 					fprintf(out, "\tServerAlias %s\n", sqlrow[2]);
 				fprintf(out, "\tDocumentRoot %s\n", sqlrow[3]);
 				fprintf(out, "</VirtualHost>\n\n");
@@ -133,14 +133,15 @@ main(int argc, char *argv[])
 void
 chk_alloc_mem(char **dest, char *from)
 {
-	*dest = malloc(strlen(from) + 1);
+	/* strip trailing \n */
+	int length = strlen(from) - 1;
+	*dest = malloc(length);
 	if (*dest == NULL) {
 		printf("ERROR: Couldn't allocate memory\n");
 		exit(1);
 	}
-	
-	printf("%s\n", from);
-	strcpy(*dest, from);
+	strncpy(*dest, from, length);
+	(*dest)[length] = '\0';
 }
 
 int
@@ -198,18 +199,18 @@ load_config_file(const char *file_name, struct config_list *clist)
 			fprintf(stderr, "Invalid option '%c' given.", option);
 			exit(1);
 			break;
-		}	
+		}
 	}
 
 	return 0;
 }
 
-/* 
+/*
  * This function returns a pointer to a malloced string containing the current
  * date, month, date, hour, minute and second in format
  * YYYY-MM-DD HH:SS UTC(+/-)HH.
  */
-char 
+char
 *mkdate(void)
 {
 	struct tm *tm_ptr;
