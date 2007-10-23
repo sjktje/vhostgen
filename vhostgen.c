@@ -169,7 +169,7 @@ load_config_file(const char *file_name, struct config_list *clist)
 		if (*line == '\0' || *line == '\n')
 			continue;
 
-		if (line[2] == ':') {
+		if (line[1] == ':') {
 			option = *line;
 			value = line+2;
 		} else
