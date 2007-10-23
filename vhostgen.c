@@ -138,8 +138,6 @@ chk_alloc_mem(char **dest, char *from)
 		printf("ERROR: Couldn't allocate memory\n");
 		exit(1);
 	}
-
-	printf("%s\n", from);
 	strcpy(*dest, from);
 }
 
@@ -166,10 +164,10 @@ load_config_file(const char *file_name, struct config_list *clist)
 			exit(1);
 		}
 
-		if (*line == '\0')
+		if (*line == '\0' || *line == '\n')
 			continue;
 
-		if (line[2] == ':') {
+		if (line[1] == ':') {
 			option = *line;
 			value = line+2;
 		} else
