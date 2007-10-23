@@ -133,12 +133,15 @@ main(int argc, char *argv[])
 void
 chk_alloc_mem(char **dest, char *from)
 {
-	*dest = malloc(strlen(from) + 1);
+	/* strip trailing \n */
+	int length = strlen(from) - 1;
+	*dest = malloc(length);
 	if (*dest == NULL) {
 		printf("ERROR: Couldn't allocate memory\n");
 		exit(1);
 	}
-	strcpy(*dest, from);
+	strncpy(*dest, from, length);
+	(*dest)[length] = '\0';
 }
 
 int
