@@ -4,6 +4,7 @@ LDFLAGS =	@LDFLAGS@ @LIBS@ @MYSQL_LIBS@
 INCLUDE =	@MYSQL_CFLAGS@
 PREFIX =	@prefix@
 BINDIR =	$(PREFIX)/bin
+ETCDIR =    $(PREFIX)/etc
 OBJS = vhostgen.o @LIBOBJS@
 
 all: vhostgen
@@ -13,8 +14,8 @@ vhostgen :		$(OBJS)
 vhostgen.o :	vhostgen.c
 				$(CC) $(CFLAGS) $(INCLUDE) -c vhostgen.c
 install :
-				$(INSTALL) -d -m 0750 vhostgen $(BINDIR)/vhostgen
-				$(INSTALL) -d -m 0750 vhostgen.conf $(PREFIX)/etc/vhostgen.conf
+				$(INSTALL) -m 0750 vhostgen $(BINDIR)
+				$(INSTALL) -m 0750 vhostgen.conf.example $(ETCDIR)
 clean :
 				-rm vhostgen vhostgen.o
 distclean :
