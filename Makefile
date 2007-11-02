@@ -13,8 +13,8 @@ vhostgen :		$(OBJS)
 vhostgen.o :	vhostgen.c
 				$(CC) $(CFLAGS) $(INCLUDE) -c vhostgen.c
 install :
-				$(INSTALL) -m 0750 vhostgen $(BINDIR)/vhostgen
-				$(INSTALL) -m 0750 vhostgen.conf $(PREFIX)/etc/vhostgen.conf.example
+				$(INSTALL) -m 0750 vhostgen $(BINDIR)
+				$(INSTALL) -m 0750 vhostgen.conf $(PREFIX)/etc
 clean :
 				-rm vhostgen vhostgen.o
 distclean :
