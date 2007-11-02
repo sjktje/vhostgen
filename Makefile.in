@@ -1,5 +1,5 @@
 CC =		@CC@
-CFLAGS =	@CFLAGS@ @CPPFLAGS@ @DEFS@
+CFLAGS =	@CFLAGS@ @CPPFLAGS@ @DEFS@ -DCONFIG_FILE=\"@prefix@@sysconfdir@/vhostgen.conf\"
 LDFLAGS =	@LDFLAGS@ @LIBS@ @MYSQL_LIBS@
 INCLUDE =	@MYSQL_CFLAGS@
 PREFIX =	@prefix@

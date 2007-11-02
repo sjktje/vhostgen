@@ -22,7 +22,6 @@
 
 #include "mysql.h"
 
-#define CONFIG_FILE "/etc/vhostgen.conf"
 #define MAX_BUFF 512
 
 struct config_list {
