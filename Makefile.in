@@ -3,6 +3,7 @@ CFLAGS =	@CFLAGS@ @CPPFLAGS@ @DEFS@ -DCONFIG_FILE=\"@sysconfdir@/vhostgen.conf\"
 LDFLAGS =	@LDFLAGS@ @LIBS@ @MYSQL_LIBS@
 INCLUDE =	@MYSQL_CFLAGS@
 prefix =	@prefix@
+INSTALL=	@INSTALL@
 bindir =	$(prefix)/bin
 etcdir =    $(prefix)/etc
 OBJS = vhostgen.o @LIBOBJS@

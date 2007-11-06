@@ -8,6 +8,8 @@ AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+# Check for install.
+AC_PROG_INSTALL
 
 # We use the following function to check for mysql libs
 # I believe this function was written by Michiel van Baak.
