@@ -119,7 +119,7 @@ main(int argc, char *argv[])
 				if (sqlrow[2] && *sqlrow[2] != '\0')
 					fprintf(out, "\tServerAlias %s\n", sqlrow[2]);
 				fprintf(out, "\tDocumentRoot %s\n", sqlrow[3]);
-				fprintf(out, "\tCustomLog %s%s.log\n", clist->logpath, sqlrow[1]);
+				fprintf(out, "\tCustomLog %s%s.log combined\n", clist->logpath, sqlrow[1]);
 				fprintf(out, "\tErrorLog %s%s.error.log\n", clist->logpath, sqlrow[1]);
 				fprintf(out, "</VirtualHost>\n\n");
 			}
