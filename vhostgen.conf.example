@@ -15,3 +15,6 @@ t:vhosts
 
 #file to write
 o:/var/www/conf/vhosts.conf
+
+#basepath where logfiles live
+l:/var/www/logs/

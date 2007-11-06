@@ -31,6 +31,7 @@ struct config_list {
 	char *vhosttable;	/* Mysql vhost table */
 	char *db;			/* Mysql database */
 	char *outfile;		/* Vhost config file to write */
+	char *logpath;      /* basepath for logfiles */
 };
 
 int load_config_file(const char *, struct config_list *);
@@ -118,6 +119,8 @@ main(int argc, char *argv[])
 				if (sqlrow[2] && *sqlrow[2] != '\0')
 					fprintf(out, "\tServerAlias %s\n", sqlrow[2]);
 				fprintf(out, "\tDocumentRoot %s\n", sqlrow[3]);
+				fprintf(out, "\tCustomLog %s%s.log\n", clist->logpath, sqlrow[1]);
+				fprintf(out, "\tErrorLog %s%s.error.log\n", clist->logpath, sqlrow[1]);
 				fprintf(out, "</VirtualHost>\n\n");
 			}
 			if (mysql_errno(&sql_conn))
@@ -193,6 +196,9 @@ load_config_file(const char *file_name, struct config_list *clist)
 			break;
 		case 't':
 			chk_alloc_mem(&clist->vhosttable, value);
+			break;
+		case 'l':
+			chk_alloc_mem(&clist->logpath, value);
 			break;
 		default:
 			fprintf(stderr, "Invalid option '%c' given.\n", option);
