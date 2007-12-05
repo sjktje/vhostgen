@@ -121,6 +121,10 @@ main(int argc, char *argv[])
 				fprintf(out, "\tDocumentRoot %s\n", sqlrow[3]);
 				fprintf(out, "\tCustomLog %s%s.log combined\n", clist->logpath, sqlrow[1]);
 				fprintf(out, "\tErrorLog %s%s.error.log\n", clist->logpath, sqlrow[1]);
+				
+				if (sqlrow[5] && *sqlrow[5] != '\0' && sqlrow[6] && sqlrow[6] != '\0')
+					fprintf(out, "\tsuPHP_UserGroup %s %s\n", sqlrow[5], sqlrow[6]);
+				
 				fprintf(out, "</VirtualHost>\n\n");
 			}
 			if (mysql_errno(&sql_conn))
