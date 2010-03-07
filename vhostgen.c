@@ -24,6 +24,8 @@
 
 #define MAX_BUFF 512
 
+#define CONFIG_FILE "/usr/local/etc/vhostgen.conf"
+
 struct config_list {
 	char *username;		/* Mysql username */
 	char *password;		/* Mysql password */
