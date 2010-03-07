@@ -55,7 +55,10 @@ main(int argc, char *argv[])
 	FILE *out;		/* File handler for vhost config file (/var/www/conf/vhosts.conf or so) */
 
 	struct config_list *clist;
-	clist = malloc(sizeof(struct config_list));
+	if ((clist = malloc(sizeof(struct config_list))) == NULL) {
+        perror("Could not malloc");
+        exit(1);
+    }
 
 	/* Populate the clist struct with information taken from CONFIG_FILE */
 	/* If we can't open the config file, exit. */
@@ -82,7 +85,10 @@ main(int argc, char *argv[])
 	qlen = strlen("SELECT * FROM ") + strlen(clist->vhosttable) + 1;
 
 	/* Next we allocate enough memory for our sql query. */
-	query = malloc(sizeof(char) * qlen);
+	if ((query = malloc(sizeof(char) * qlen)) == NULL) {
+        perror("Could not malloc");
+        exit(1);
+    }
 
 	/*
 	 * And now we put the query into "query" (or well, we put it into memory and
