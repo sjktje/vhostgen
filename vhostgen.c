@@ -34,8 +34,9 @@ struct config_list {
 	char *logpath;      /* basepath for logfiles */
 };
 
-int load_config_file(const char *, struct config_list *);
-char *mkdate(void);
+static int   load_config_file(const char *, struct config_list *);
+static char *mkdate(void);
+static void  chk_alloc_mem(char **, char *);
 
 int
 main(int argc, char *argv[])
@@ -136,7 +137,7 @@ main(int argc, char *argv[])
 	return(0);
 }
 
-void
+static void
 chk_alloc_mem(char **dest, char *from)
 {
 	/* strip trailing \n */
@@ -150,7 +151,7 @@ chk_alloc_mem(char **dest, char *from)
 	(*dest)[length] = '\0';
 }
 
-int
+static int
 load_config_file(const char *file_name, struct config_list *clist)
 {
 	FILE *fp;
@@ -219,7 +220,7 @@ load_config_file(const char *file_name, struct config_list *clist)
  * date, month, date, hour, minute and second in format
  * YYYY-MM-DD HH:SS UTC(+/-)HH.
  */
-char
+static char
 *mkdate(void)
 {
 	struct tm *tm_ptr;
