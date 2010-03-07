@@ -164,6 +164,7 @@ load_config_file(const char *file_name, struct config_list *clist)
 	char  line[MAX_BUFF];
 	char  option;
 	char *value;
+    int len;
 
 	if ((fp = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Couldn't open configuration file %s\n", file_name);
@@ -183,6 +184,11 @@ load_config_file(const char *file_name, struct config_list *clist)
 		if (*line == '\0' || *line == '\n')
 			continue;
 
+        len = strlen(line);
+
+        if (line[len-1] == '\n')
+            line[len-1] = '\0';
+
 		if (line[1] == ':') {
 			option = *line;
 			value = line+2;
@@ -191,25 +197,25 @@ load_config_file(const char *file_name, struct config_list *clist)
 
 		switch(option) {
 		case 'u':
-			chk_alloc_mem(&clist->username, value);
+		    clist->username = strdup(value);
 			break;
 		case 'p':
-			chk_alloc_mem(&clist->password, value);
+            clist->password = strdup(value);
 			break;
 		case 'o':
-			chk_alloc_mem(&clist->outfile, value);
+            clist->outfile = strdup(value);
 			break;
 		case 'h':
-			chk_alloc_mem(&clist->host, value);
+            clist->host = strdup(value);
 			break;
 		case 'd':
-			chk_alloc_mem(&clist->db, value);
+            clist->db = strdup(value);
 			break;
 		case 't':
-			chk_alloc_mem(&clist->vhosttable, value);
+            clist->vhosttable = strdup(value);
 			break;
 		case 'l':
-			chk_alloc_mem(&clist->logpath, value);
+            clist->logpath = strdup(value);
 			break;
 		default:
 			fprintf(stderr, "Invalid option '%c' given.\n", option);
