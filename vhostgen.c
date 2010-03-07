@@ -122,7 +122,7 @@ main(int argc, char *argv[])
 				else
 					fprintf(out, "\n# %d - %s, maintained by %s\n",
 						atoi(sqlrow[0]), sqlrow[1], sqlrow[4]);
-				fprintf(out, "<VirtualHost *>\n\tServerName %s\n", sqlrow[1]);
+				fprintf(out, "<VirtualHost *:%s>\n\tServerName %s\n", sqlrow[7], sqlrow[1]);
 				if (sqlrow[2] && *sqlrow[2] != '\0')
 					fprintf(out, "\tServerAlias %s\n", sqlrow[2]);
 				fprintf(out, "\tDocumentRoot %s\n", sqlrow[3]);
