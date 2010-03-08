@@ -13,12 +13,12 @@
 
 /* Struct containing data gathered from ~/.vhostgenrc */
 struct config_list {
-	char *username;		/* Mysql username */
+	char *username;	    /* Mysql username */
     char *password;     /* Mysql password */
-	char *host;			/* Mysql hostname */
-	char *vhosttable;	/* Mysql vhost table */
-	char *db;			/* Mysql database */
-	char *outfile;		/* Vhost config file to write */
+	char *host;	        /* Mysql hostname */
+	char *vhosttable;   /* Mysql vhost table */
+	char *db;	        /* Mysql database */
+	char *outfile;      /* Vhost config file to write */
 	char *logpath;      /* basepath for logfiles */
     char *docroot;      /* basepath for www data */
 };
@@ -135,7 +135,7 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
     newentry = get_vhost_info(newentry, clist);
     
     query = vg_asprintf("INSERT INTO %s (`servername`, `serveralias`, "
-            "`documentroot`, `maintainer`, `user`, `group`,`port`) "
+            "`documentroot`, `addedby`, `user`, `group`,`port`) "
             "VALUES ('%s','%s','%s','%s','%s','%s','%s')", 
             clist->vhosttable, newentry->servername, newentry->serveralias, 
             newentry->docroot, newentry->addedby, newentry->user, newentry->group,
@@ -269,7 +269,7 @@ generate_vhosts_conf(MYSQL sql_conn, struct config_list *clist)
     FILE                *out;
     
     if ((asprintf(&query, "SELECT `id`,`servername`,`serveralias`,`documentroot`,"
-        "`maintainer`,`user`,`group`,`port` FROM %s", clist->vhosttable)) == -1) {
+        "`addedby`,`user`,`group`,`port` FROM %s", clist->vhosttable)) == -1) {
         perror("asprintf");
         mysql_close(&sql_conn);
         free_config(clist);
