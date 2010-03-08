@@ -1,0 +1,21 @@
+This program was developed (and tested) on FreeBSD 8.0. It might run on other
+platforms as well, but you will most probably craft your own Makefile (unless
+your platform has got bsd.prog.mk.)
+
+vhostgen expects the following MySQL table setup:
+
+CREATE TABLE `vhosts` (
+  `id` int(11) NOT NULL auto_increment,
+  `servername` varchar(255) NOT NULL,
+  `serveralias` varchar(255) default NULL,
+  `documentroot` varchar(255) NOT NULL,
+  `addedby` varchar(255) default NULL,
+  `user` varchar(255) default NULL,
+  `group` varchar(255) default NULL,
+  `port` varchar(255) default '80',
+  PRIMARY KEY  (`id`)
+);
+
+You may of course call the table whatever you like, as long as you edit your
+~/.vhostgenrc accordingly. Add new entries using ``vhostgen --add'' and 
+use ``vhostgen'' to actually generate the vhost config file.
