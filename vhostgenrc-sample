@@ -1,0 +1,28 @@
+# mv vhostgenrc-sample ~/.vhostgenrc and edit it to fit your needs.
+
+# Your MySQL username
+u:bob
+
+# Your MySQL password. ONLY use this if u: is set to a username that have 
+# minimal MySQL privileges (i.e. may only issue SELECT from the t: table). 
+# If you leave this commented out vhostgen will ask you for your password
+# upon execution.
+#p:lala
+
+# MySQL hostname
+h:localhost
+
+# MySQL database
+d:vhostgen
+
+# MySQL table with vhosts
+t:vhosts
+
+# File to write
+o:/usr/local/etc/apache22/vhosts.conf
+
+# Directory where logfiles live
+l:/var/log/apache/
+
+# Directory where vhosts live
+r:/usr/local/www/vhosts

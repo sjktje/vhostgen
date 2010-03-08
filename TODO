@@ -1,4 +1,0 @@
-* Let vhostgen know where the vhostgen.conf file is located (could probably use
-  some autoconf magic + config.h for this).
-* Include the strlcpy function in our source dist, and add a HAVE_STRLCPY #define.
-
