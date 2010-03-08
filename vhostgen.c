@@ -70,7 +70,6 @@ static int               load_config_file(struct config_list *);
 static struct entry     *get_vhost_info(struct entry *, struct config_list *); 
 static struct optlist   *optlistinit(void);
 static struct optlist   *parseargs(int *, char ***);
-static void              free_config(struct config_list *);
 static void              usage(char *);
 
 
@@ -110,21 +109,17 @@ main(int argc, char *argv[])
 		if (mysql_errno(&sql_conn)) {
 			fprintf(stderr, "Connection error %d: %s\n", 
                     mysql_errno(&sql_conn), mysql_error(&sql_conn));
-            free_config(clist);
 			exit(1);
 		}
 	}
 
     if (cmdargs->aflag) {
         addvhost(sql_conn, clist);
-
-        free_config(clist);
         mysql_close(&sql_conn);
-        exit(0);
+        exit(1);
     }
 
     if (generate_vhosts_conf(sql_conn, clist)) {
-        free_config(clist);
         mysql_close(&sql_conn);
         exit(1);
     }
@@ -288,7 +283,6 @@ generate_vhosts_conf(MYSQL sql_conn, struct config_list *clist)
         "`addedby`,`user`,`group`,`port` FROM %s", clist->vhosttable)) == -1) {
         perror("asprintf");
         mysql_close(&sql_conn);
-        free_config(clist);
         exit(1);
     }
 
@@ -351,21 +345,6 @@ static int is_emptystring(char *string) {
         return 1;
     else
         return 0;
-}
-
-/* 
- * Releases memory previously allocated for clist. 
- */
-static void 
-free_config(struct config_list *clist)
-{
-    free(clist->username);
-    free(clist->host);
-    free(clist->vhosttable);
-    free(clist->db);
-    free(clist->outfile);
-    free(clist->logpath);
-    free(clist);
 }
 
 /* 
