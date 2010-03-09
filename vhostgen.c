@@ -43,6 +43,7 @@ struct config_list {
 struct optlist {
     int      aflag;     /* --add */
     int      hflag;     /* --help */
+    char    *username;  /* --user */
     char    *progname;  /* Name of executable */
 };
 
@@ -90,9 +91,16 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-    if (load_config_file(clist)) {
-        free(clist);
+    if (load_config_file(clist)) 
         exit(1);
+
+    /*
+     * User supplied username using -u switch. Make sure to prompt them for a 
+     * password; don't use any passwords from ~/.vhostgenrc.
+     */
+    if (!is_emptystring(cmdargs->username)) {
+        free(clist->password);
+        clist->password = NULL;
     }
 
     if (is_emptystring(clist->password)) 
@@ -522,17 +530,21 @@ parseargs(int *argc, char ***argv)
     cmdargs->progname = *argv[0];
 
     static struct option options[] = {
-        { "add",    no_argument,    NULL,   'a' },
-        { "help",   no_argument,    NULL,   'h' },
+        { "add",    no_argument,        NULL,   'a' },
+        { "help",   no_argument,        NULL,   'h' },
+        { "user",   required_argument,  NULL,   'u' },
     };
 
-    while ((ch = getopt_long(*argc, *argv, "ah", options, NULL)) != -1) {
+    while ((ch = getopt_long(*argc, *argv, "ahu:", options, NULL)) != -1) {
         switch (ch) {
         case 'a':
             cmdargs->aflag = 1;
             break;
         case 'h':
             cmdargs->hflag = 1;
+            break;
+        case 'u':
+            cmdargs->username = vg_strdup(optarg);
             break;
         default:
             usage(*argv[0]);
@@ -556,5 +568,8 @@ optlistinit(void)
     }
 
     cmdargs->aflag = 0;
+    cmdargs->hflag = 0;
+    cmdargs->progname = NULL;
+    cmdargs->username = NULL;
     return cmdargs;
 }
