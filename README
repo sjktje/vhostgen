@@ -1,6 +1,6 @@
 This program was developed (and tested) on FreeBSD 8.0. It might run on other
-platforms as well, but you will most probably craft your own Makefile (unless
-your platform has got bsd.prog.mk.)
+platforms as well, but you will most probably have tocraft your own Makefile 
+(unless your platform has got bsd.prog.mk.)
 
 vhostgen expects the following MySQL table setup:
 
