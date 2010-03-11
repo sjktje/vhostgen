@@ -25,7 +25,7 @@
 
 #include "mysql.h"
 
-#define MAX_BUFF 512
+#include "userio.h"
 
 /* Struct containing data gathered from ~/.vhostgenrc */
 struct config_list {
@@ -58,7 +58,6 @@ struct entry {
     char *port;         /* Port (80) */
 };
 
-static char             *getinput(const char *, char *);
 static char             *mkdate(void);
 static char             *myhomedir(void);
 static char             *myuser(void);
@@ -140,8 +139,8 @@ main(int argc, char *argv[])
 static void 
 usage(char *progname) 
 {
-    fprintf(stderr, "USAGE: %s --add"
-                    "       %s --help", progname, progname);
+    fprintf(stderr, "USAGE: %s --add\n"
+                    "       %s --help\n", progname, progname);
     exit(0);
 }
 
@@ -152,6 +151,13 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
     int res;
 
     newentry = get_vhost_info(newentry, clist);
+
+    if (getyesno("Does the above look reasonable?", 1)) 
+        printf("Adding vhost...\n");
+    else {
+        printf("Aborting...\n");
+        exit(1);
+    }
     
     query = vg_asprintf("INSERT INTO %s (`servername`, `serveralias`, "
             "`documentroot`, `addedby`, `user`, `group`,`port`) "
@@ -230,49 +236,6 @@ static char
     return passwd->pw_dir;
 }
 
-static char
-*getinput(const char *message, char *defvalue)
-{
-    char *line = NULL;
-    char *p = NULL;
-
-    printf("%s [%s]: ", message, (defvalue == NULL) ? "" : defvalue);
-    fflush(stdout);
-
-    if ((line = malloc(MAX_BUFF+1)) == NULL) {
-        perror("getinput() could not malloc");
-        exit(1);
-    }
-
-
-    if ((p = fgets(line, MAX_BUFF, stdin)) != NULL) { 
-        int last = strlen(line) - 1;
-
-        if (line[0] == '\n') {   /* User just hit enter - use default value if it exists*/
-            if (defvalue != NULL)
-                p = strdup(defvalue);
-        }
-
-        /*
-         * Inserting an unaccompanied dot means the answer should be empty
-         * (just hitting RETURN would indicate using the default value.)
-         */
-        if ((line[0] == '.') && (line[1] == '\n')) 
-            return NULL;
-
-        if (strchr(line, '\n') == NULL) {
-            fprintf(stderr, "Input line would not fit in buffer. Exiting.");
-            exit(1);
-        }
-
-        /* Remove trailing \n if there is one */
-        if (line[last] == '\n')
-            line[last] = '\0';
-
-    }
-
-    return p;
-}
 
 /*
  * Connect to database, grab information about vhosts and generate vhosts.conf
@@ -362,7 +325,7 @@ static int
 load_config_file(struct config_list *clist)
 {
 	FILE *fp;
-	char  line[MAX_BUFF];
+	char  line[MAXBUF];
 	char  option;
 	char *value;
     int len;

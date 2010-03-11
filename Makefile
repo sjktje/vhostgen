@@ -1,5 +1,5 @@
 PROG=   vhostgen
-SRCS=   vhostgen.c
+SRCS=   vhostgen.c userio.c
 BINDIR= ${PREFIX}/bin
 MAN=
 
