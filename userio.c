@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "userio.h"
 
@@ -64,5 +65,22 @@ getyesno(const char *message, int def)
         return 1;
     else
         return 0;
+}
+
+/*
+ * printf-ish perror
+ */
+void
+perrorf(const char *fmt, ...)
+{
+    char *string = NULL;
+    va_list va;
+
+    va_start(va, fmt);
+    vasprintf(&string, fmt, va);
+    va_end(va);
+
+    perror(string);
+    free(string);
 }
 

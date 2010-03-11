@@ -275,7 +275,7 @@ generate_vhosts_conf(MYSQL sql_conn, struct config_list *clist)
     }
 
     if ((out = fopen(clist->outfile, "w")) == NULL) {
-        fprintf(stderr, "ERROR: %s could not be opened for writing\n", clist->outfile);
+        perrorf("Could not fopen %s", clist->outfile);
         return 1;
     }
         
@@ -335,7 +335,7 @@ load_config_file(struct config_list *clist)
     config_file = vg_asprintf("%s/.vhostgenrc", myhomedir());
 
 	if ((fp = fopen(config_file, "r")) == NULL) {
-        fprintf(stderr, "Could not read config file %s\n", config_file);
+        perrorf("Could not fopen %s", config_file);
 		return 1;
     }
 
