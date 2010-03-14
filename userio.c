@@ -73,14 +73,10 @@ getyesno(const char *message, int def)
 void
 perrorf(const char *fmt, ...)
 {
-    char *string = NULL;
+    char buf[128];
     va_list va;
-
     va_start(va, fmt);
-    vasprintf(&string, fmt, va);
+    vsnprintf(buf, sizeof(buf), fmt, va);
     va_end(va);
-
-    perror(string);
-    free(string);
+    perror(buf);
 }
-
