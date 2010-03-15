@@ -1,5 +1,5 @@
-This program was developed (and tested) on FreeBSD 8.0. It might run on other
-platforms as well, but you will most probably have tocraft your own Makefile 
+This program was developed (and tested) on FreeBSD 7.2. It might run on other
+platforms as well, but you will most probably have to craft your own Makefile 
 (unless your platform has got bsd.prog.mk.)
 
 vhostgen expects the following MySQL table setup:
@@ -18,4 +18,5 @@ CREATE TABLE `vhosts` (
 
 You may of course call the table whatever you like, as long as you edit your
 ~/.vhostgenrc accordingly. Add new entries using ``vhostgen --add'' and 
-use ``vhostgen'' to actually generate the vhost config file.
+use ``vhostgen'' to actually generate the vhost config file. See
+http://ankeborg.nu/wiki/vhostgen for more information
