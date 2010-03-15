@@ -101,12 +101,10 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-    /*
     if (!is_emptystring(cmdargs->list)) {
         listvhosts(sql_conn, clist, cmdargs->list);
         return 0;
     }
-    */
 
     if (generate_vhosts_conf(sql_conn, clist)) {
         mysql_close(&sql_conn);
@@ -319,9 +317,11 @@ static int listvhosts(MYSQL sql_conn, struct config_list *clist, char *pattern) 
         }
     }
 
-    printf("-----[ %s ]-----\n", pattern);
+    printf("%-4s %-25s %-30s %-8s\n", "id", "vhost", "alias", "added by");
+    printf("----------------------------------------------------------------------\n");
     while ((sqlrow = mysql_fetch_row(res_ptr))) 
-        printf("%s: %s [%s]\n", sqlrow[0], sqlrow[1], sqlrow[4]);
+        printf("%-3s: %-25s %-30s %-8s\n", sqlrow[0], sqlrow[1], 
+                sqlrow[2], sqlrow[4]);
 
         
     mysql_free_result(res_ptr);
@@ -588,7 +588,7 @@ parseargs(int *argc, char ***argv)
         { "add",    no_argument,        NULL,   'a' },
         { "help",   no_argument,        NULL,   'h' },
         { "user",   required_argument,  NULL,   'u' },
-        { "list",   optional_argument,  NULL,   'l' },
+        { "list",   required_argument,  NULL,   'l' },
     };
 
     while ((ch = getopt_long(*argc, *argv, "ahu:l:", options, NULL)) != -1) {
@@ -604,6 +604,7 @@ parseargs(int *argc, char ***argv)
             break;
         case 'l':
             cmdargs->list = vg_strdup(optarg);
+            break;
         default:
             usage(*argv[0]);
             break; /* NOT REACHED */
