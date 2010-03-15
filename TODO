@@ -16,3 +16,4 @@
         ...
 [x] Use mysql_real_escape_string() on user input going into db.
 [ ] Create vhostgen --version
+[ ] Make vhostgen use syslog
