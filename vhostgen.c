@@ -152,6 +152,7 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
     struct entry *newentry = { 0 };
     struct entry *escapedentry = { 0 };
     char *query = NULL;
+    char *table = NULL;
     int res;
 
     newentry = get_vhost_info(newentry, clist);
@@ -173,17 +174,20 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
     }
 
     free(newentry);
+
+    table = mres(sql_conn, clist->vhosttable);
     
     query = vg_asprintf("INSERT INTO %s (`servername`, `serveralias`, "
             "`documentroot`, `addedby`, `user`, `group`,`port`) "
             "VALUES ('%s','%s','%s','%s','%s','%s','%s')", 
-            clist->vhosttable, escapedentry->servername, escapedentry->serveralias, 
+            table, escapedentry->servername, escapedentry->serveralias, 
             escapedentry->docroot, escapedentry->addedby, escapedentry->user, escapedentry->group,
             escapedentry->port);
 
     res = mysql_query(&sql_conn, query);
     free_entry(escapedentry);
     free(query);
+    free(table);
 
     if (res) {
         fprintf(stderr, "Insert error %d: %s\n", 
