@@ -44,7 +44,8 @@ static struct optlist   *optlistinit(void);
 static struct optlist   *parseargs(int *, char ***);
 static void              usage(char *);
 static void              free_entry(struct entry *); 
-void              printentry(struct entry *);
+void                     printentry(struct entry *);
+static int               listvhosts(MYSQL, struct config_list *, char *);
 
 
 int 
@@ -100,6 +101,13 @@ main(int argc, char *argv[])
         exit(1);
     }
 
+    /*
+    if (!is_emptystring(cmdargs->list)) {
+        listvhosts(sql_conn, clist, cmdargs->list);
+        return 0;
+    }
+    */
+
     if (generate_vhosts_conf(sql_conn, clist)) {
         mysql_close(&sql_conn);
         exit(1);
@@ -118,6 +126,7 @@ usage(char *progname)
     exit(0);
 }
 
+    
 static int addvhost(MYSQL sql_conn, struct config_list *clist)
 {
     struct entry *newentry = { 0 };
@@ -211,7 +220,7 @@ mres(MYSQL sql_conn, char *string)
     char *escaped = NULL;
     int len = 0;
 
-    if (string == NULL)
+    if (is_emptystring(string))
         return NULL;
 
     len = strlen(string);
@@ -281,6 +290,44 @@ static char
     return passwd->pw_dir;
 }
 
+static int listvhosts(MYSQL sql_conn, struct config_list *clist, char *pattern) {
+    MYSQL_ROW    sqlrow;
+    MYSQL_RES   *res_ptr = NULL;
+    int          res;
+    char        *escaped = NULL;
+    char        *query = NULL;
+    
+    escaped = mres(sql_conn, pattern);
+    query = vg_asprintf("SELECT `id`,`servername`,`serveralias`,`documentroot`,"
+            "`addedby`,`user`,`group`,`port` FROM %s WHERE `servername` LIKE '%s'",
+            clist->vhosttable, escaped);
+    free(escaped);
+    res = mysql_query(&sql_conn, query);
+    free(query);
+    query = NULL;
+
+    if (res) {
+        fprintf(stderr, "SELECT error: %s\n", mysql_error(&sql_conn));
+        return 1;
+    }
+
+    if ((res_ptr = mysql_use_result(&sql_conn)) == NULL) {
+        if (mysql_errno(&sql_conn)) {
+            fprintf(stderr, "MySQL error %d: %s\n", 
+                    mysql_errno(&sql_conn), mysql_error(&sql_conn));
+            return 1;
+        }
+    }
+
+    printf("-----[ %s ]-----\n", pattern);
+    while ((sqlrow = mysql_fetch_row(res_ptr))) 
+        printf("%s: %s [%s]\n", sqlrow[0], sqlrow[1], sqlrow[4]);
+
+        
+    mysql_free_result(res_ptr);
+    return 0;
+}
+        
 
 /*
  * Connect to database, grab information about vhosts and generate vhosts.conf
@@ -541,9 +588,10 @@ parseargs(int *argc, char ***argv)
         { "add",    no_argument,        NULL,   'a' },
         { "help",   no_argument,        NULL,   'h' },
         { "user",   required_argument,  NULL,   'u' },
+        { "list",   optional_argument,  NULL,   'l' },
     };
 
-    while ((ch = getopt_long(*argc, *argv, "ahu:", options, NULL)) != -1) {
+    while ((ch = getopt_long(*argc, *argv, "ahu:l:", options, NULL)) != -1) {
         switch (ch) {
         case 'a':
             cmdargs->aflag = 1;
@@ -554,6 +602,8 @@ parseargs(int *argc, char ***argv)
         case 'u':
             cmdargs->username = vg_strdup(optarg);
             break;
+        case 'l':
+            cmdargs->list = vg_strdup(optarg);
         default:
             usage(*argv[0]);
             break; /* NOT REACHED */
@@ -579,5 +629,6 @@ optlistinit(void)
     cmdargs->hflag = 0;
     cmdargs->progname = NULL;
     cmdargs->username = NULL;
+    cmdargs->list = NULL;
     return cmdargs;
 }
