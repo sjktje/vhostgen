@@ -1,4 +1,4 @@
 [x] Make perrorf use a static buffer instead of mallocing.
 [ ] Create vhostgen --list
 [ ] Create vhostgen --delete
-[ ] Use mysql_real_escape_string() on user input going into db.
+[x] Use mysql_real_escape_string() on user input going into db.

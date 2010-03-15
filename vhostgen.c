@@ -59,6 +59,7 @@ struct entry {
 };
 
 static char             *mkdate(void);
+static char             *mres(MYSQL, char *);
 static char             *myhomedir(void);
 static char             *myuser(void);
 static char             *vg_asprintf(const char *, ...);
@@ -68,9 +69,11 @@ static int               generate_vhosts_conf(MYSQL, struct config_list *);
 static int               is_emptystring(char *);
 static int               load_config_file(struct config_list *);
 static struct entry     *get_vhost_info(struct entry *, struct config_list *); 
+static struct entry     *mres_entry(MYSQL, struct entry *);
 static struct optlist   *optlistinit(void);
 static struct optlist   *parseargs(int *, char ***);
 static void              usage(char *);
+static void              free_entry(struct entry *); 
 
 
 int 
@@ -147,10 +150,20 @@ usage(char *progname)
 static int addvhost(MYSQL sql_conn, struct config_list *clist)
 {
     struct entry *newentry = { 0 };
+    struct entry *escapedentry = { 0 };
     char *query = NULL;
     int res;
 
     newentry = get_vhost_info(newentry, clist);
+    escapedentry = mres_entry(sql_conn, newentry);
+    
+    /* 
+     * Might want to do like:
+     * clear
+     * echo "----- vhost blah.com ----"
+     * echo ...
+     * echo "-------------------------"
+     */
 
     if (getyesno("Does the above look reasonable?", 1)) 
         printf("Adding vhost...\n");
@@ -158,27 +171,89 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
         printf("Aborting...\n");
         exit(1);
     }
+
+    free(newentry);
     
     query = vg_asprintf("INSERT INTO %s (`servername`, `serveralias`, "
             "`documentroot`, `addedby`, `user`, `group`,`port`) "
             "VALUES ('%s','%s','%s','%s','%s','%s','%s')", 
-            clist->vhosttable, newentry->servername, newentry->serveralias, 
-            newentry->docroot, newentry->addedby, newentry->user, newentry->group,
-            newentry->port);
-    
+            clist->vhosttable, escapedentry->servername, escapedentry->serveralias, 
+            escapedentry->docroot, escapedentry->addedby, escapedentry->user, escapedentry->group,
+            escapedentry->port);
+
     res = mysql_query(&sql_conn, query);
+    free_entry(escapedentry);
+    free(query);
+
     if (res) {
         fprintf(stderr, "Insert error %d: %s\n", 
                 mysql_errno(&sql_conn), mysql_error(&sql_conn));
-        free(query);
         return 1;
     }
 
-    free(query);
     return 0;
 }
 
+/* 
+ * Takes entry struct and returns another entry struct where all struct members
+ * have been run through mysql_real_escape_string. Returned struct should be 
+ * freed with free_entry();
+ */
+static struct entry *
+mres_entry(MYSQL sql_conn, struct entry *newentry)
+{
+    struct entry *escapedentry = { 0 };
+    if ((escapedentry = malloc(sizeof(struct entry))) == NULL) {
+        perror("mres_entry malloc");
+        exit(1);
+    }
 
+    escapedentry->servername    = mres(sql_conn, newentry->servername);
+    escapedentry->serveralias   = mres(sql_conn, newentry->serveralias);
+    escapedentry->docroot       = mres(sql_conn, newentry->docroot);
+    escapedentry->addedby       = mres(sql_conn, newentry->addedby);
+    escapedentry->user          = mres(sql_conn, newentry->user);
+    escapedentry->group         = mres(sql_conn, newentry->group);
+    escapedentry->port          = mres(sql_conn, newentry->port);
+
+    return escapedentry;
+}
+
+/* 
+ * Frees malloced entry struct.
+ */
+static void free_entry(struct entry *e) {
+    free(e->servername);
+    free(e->servername);
+    free(e->docroot);
+    free(e->addedby);
+    free(e->user);
+    free(e->group);
+    free(e->port);
+    free(e);
+}
+
+/*
+ * Returns malloced string safe for database insertion. Must be freed.
+ */
+static char *
+mres(MYSQL sql_conn, char *string)
+{
+    char *escaped = NULL;
+    int len = 0;
+
+    if (string == NULL)
+        return NULL;
+
+    len = strlen(string);
+    if ((escaped = malloc(len * 2 + 1)) == NULL) {
+        perror("mres malloc");
+        exit(1);
+    }
+
+    mysql_real_escape_string(&sql_conn, escaped, string, len);
+    return escaped;
+}
 
 static struct entry *
 get_vhost_info(struct entry *newentry, struct config_list *clist) 
