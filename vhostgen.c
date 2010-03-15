@@ -27,36 +27,6 @@
 
 #include "userio.h"
 
-/* Struct containing data gathered from ~/.vhostgenrc */
-struct config_list {
-	char *username;	    /* Mysql username */
-    char *password;     /* Mysql password */
-	char *host;	        /* Mysql hostname */
-	char *vhosttable;   /* Mysql vhost table */
-	char *db;	        /* Mysql database */
-	char *outfile;      /* Vhost config file to write */
-	char *logpath;      /* basepath for logfiles */
-    char *docroot;      /* basepath for www data */
-};
-
-/* Command line options struct */
-struct optlist {
-    int      aflag;     /* --add */
-    int      hflag;     /* --help */
-    char    *username;  /* --user */
-    char    *progname;  /* Name of executable */
-};
-
-/* New vhost entry struct */
-struct entry {
-    char *servername;   /* Name of new website */
-    char *serveralias;  /* Alias (www.servername) */
-    char *docroot;      /* www data directory */
-    char *addedby;      /* Username of user adding it */
-    char *user;         /* suPHP user */
-    char *group;        /* suPHP group */
-    char *port;         /* Port (80) */
-};
 
 static char             *mkdate(void);
 static char             *mres(MYSQL, char *);
@@ -74,6 +44,7 @@ static struct optlist   *optlistinit(void);
 static struct optlist   *parseargs(int *, char ***);
 static void              usage(char *);
 static void              free_entry(struct entry *); 
+void              printentry(struct entry *);
 
 
 int 
@@ -158,13 +129,7 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
     newentry = get_vhost_info(newentry, clist);
     escapedentry = mres_entry(sql_conn, newentry);
     
-    /* 
-     * Might want to do like:
-     * clear
-     * echo "----- vhost blah.com ----"
-     * echo ...
-     * echo "-------------------------"
-     */
+    printentry(newentry);
 
     if (getyesno("Does the above look reasonable?", 1)) 
         printf("Adding vhost...\n");
@@ -298,6 +263,7 @@ get_vhost_info(struct entry *newentry, struct config_list *clist)
 
     return newentry;
 }
+
 
 static char
 *myuser(void)

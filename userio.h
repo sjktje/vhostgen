@@ -3,8 +3,11 @@
 
 #define MAXBUF 128
 
+#include "vhostgen.h"
+
 char *getinput(const char *, char *);
 int   getyesno(const char *, int);
 void  perrorf(const char *, ...);
+void  printentry(struct entry *);
 
 #endif

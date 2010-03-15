@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #include "userio.h"
+#include "vhostgen.h"
 
 /* 
  * Prints message and waits for an answer. defvalue is used if user simply
@@ -79,4 +80,28 @@ perrorf(const char *fmt, ...)
     vsnprintf(buf, sizeof(buf), fmt, va);
     va_end(va);
     perror(buf);
+}
+
+/*
+ * Print contents of a entry struct.
+ */
+void 
+printentry(struct entry *e)
+{
+    int len = 0;
+    int i;
+
+    len = strlen(e->servername);
+
+    printf("----[ %s ]----\n", e->servername);
+    printf("%-15s: %s\n", "Server alias", e->serveralias);
+    printf("%-15s: %s\n", "Document root", e->docroot);
+    printf("%-15s: %s\n", "suPHP user", e->user);
+    printf("%-15s: %s\n", "suPHP group", e->group);
+    printf("%-15s: %s\n", "Port", e->port);
+    printf("%-15s: %s\n", "Added by", e->addedby);
+    printf("------------");
+    for(i = 0; i < len; i++)
+        printf("-");
+    printf("\n");
 }
