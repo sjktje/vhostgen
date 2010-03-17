@@ -145,12 +145,12 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
     
     printentry(newentry);
 
-    if (getyesno("Does the above look reasonable?", 1)) 
-        printf("Adding vhost...\n");
-    else {
+    if (!getyesno("Does the above look reasonable?", 1)) {
         printf("Aborting...\n");
         exit(1);
     }
+
+    printf("Adding vhost...\n");
 
     free(newentry);
 
