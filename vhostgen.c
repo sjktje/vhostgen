@@ -26,6 +26,7 @@
 #include "mysql.h"
 
 #include "userio.h"
+#include "logger.h"
 
 
 static char             *mkdate(void);
@@ -163,16 +164,19 @@ static int addvhost(MYSQL sql_conn, struct config_list *clist)
             escapedentry->port);
 
     res = mysql_query(&sql_conn, query);
-    free_entry(escapedentry);
     free(query);
     free(table);
 
     if (res) {
         fprintf(stderr, "Insert error %d: %s\n", 
                 mysql_errno(&sql_conn), mysql_error(&sql_conn));
+        free_entry(escapedentry);
         return 1;
     }
 
+    log_info("%s [%s] added vhost %s", escapedentry->addedby, clist->username, 
+            escapedentry->servername);
+    free_entry(escapedentry);
     return 0;
 }
 
@@ -353,6 +357,11 @@ static int deletevhost(MYSQL sql_conn, struct config_list *clist, char *pattern)
         return 1;
     }
 
+    printf("Deleted vhosts matching %s.\n", pattern);
+
+    log_info("%s [%s] deleted vhosts matching '%s'", myuser(), clist->username,
+            pattern);
+
     return 0;
 }
 
@@ -426,6 +435,9 @@ generate_vhosts_conf(MYSQL sql_conn, struct config_list *clist)
 
     fclose(out);
     mysql_free_result(res_ptr);
+
+    log_info("%s [%s] generated %s", myuser(), clist->username, clist->outfile);
+
     return 0;
 }
 
