@@ -481,8 +481,10 @@ load_config_file(struct config_list *clist)
 		if (line[1] == ':') {
 			option = *line;
 			value = line+2;
-		} else
+		} else {
 			fprintf(stderr, "Invalid line in config file:\n%s", line);
+            continue;
+        }
 
 		switch(option) {
 		case 'u':
