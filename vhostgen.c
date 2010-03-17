@@ -35,6 +35,7 @@ static char             *myuser(void);
 static char             *vg_asprintf(const char *, ...);
 static char             *vg_strdup(char *);
 static int               addvhost(MYSQL, struct config_list *);
+static int               deletevhost(MYSQL, struct config_list *, char *);
 static int               generate_vhosts_conf(MYSQL, struct config_list *);
 static int               is_emptystring(char *);
 static int               load_config_file(struct config_list *);
@@ -103,6 +104,11 @@ main(int argc, char *argv[])
 
     if (!is_emptystring(cmdargs->list)) {
         listvhosts(sql_conn, clist, cmdargs->list);
+        return 0;
+    }
+
+    if (!is_emptystring(cmdargs->delete)) {
+        deletevhost(sql_conn, clist, cmdargs->delete);
         return 0;
     }
 
@@ -327,6 +333,29 @@ static int listvhosts(MYSQL sql_conn, struct config_list *clist, char *pattern) 
     mysql_free_result(res_ptr);
     return 0;
 }
+
+static int deletevhost(MYSQL sql_conn, struct config_list *clist, char *pattern) {
+    char        *escaped = NULL;
+    char        *query = NULL;
+    int          res;
+
+    escaped = mres(sql_conn, pattern);
+    query = vg_asprintf("DELETE FROM %s WHERE `servername` LIKE '%s'", 
+            clist->vhosttable, escaped);
+    free(escaped);
+    escaped = NULL;
+    res = mysql_query(&sql_conn, query);
+    free(query);
+    query = NULL;
+
+    if (res) {
+        fprintf(stderr, "DELETE error: %s\n", mysql_error(&sql_conn));
+        return 1;
+    }
+
+    return 0;
+}
+
         
 
 /*
@@ -589,9 +618,10 @@ parseargs(int *argc, char ***argv)
         { "help",   no_argument,        NULL,   'h' },
         { "user",   required_argument,  NULL,   'u' },
         { "list",   required_argument,  NULL,   'l' },
+        { "delete", required_argument,  NULL,   'd' },
     };
 
-    while ((ch = getopt_long(*argc, *argv, "ahu:l:", options, NULL)) != -1) {
+    while ((ch = getopt_long(*argc, *argv, "ahu:l:d:", options, NULL)) != -1) {
         switch (ch) {
         case 'a':
             cmdargs->aflag = 1;
@@ -604,6 +634,9 @@ parseargs(int *argc, char ***argv)
             break;
         case 'l':
             cmdargs->list = vg_strdup(optarg);
+            break;
+        case 'd':
+            cmdargs->delete = vg_strdup(optarg);
             break;
         default:
             usage(*argv[0]);

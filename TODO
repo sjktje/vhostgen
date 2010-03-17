@@ -1,9 +1,7 @@
 [x] Make perrorf use a static buffer instead of mallocing.
 [x] Create vhostgen --list %string%
-[ ] Create vhostgen --delete [n|%string%]
-    Example:
-    vhostgen --delete 5 <-- deletes vhost with id 5 (obtain from vhostgen --list)
-    vhostgen --delete %ankeborg% <-- delete vhosts matching "ankeborg"
+[x] Create vhostgen --delete %string%
+    Example: vhostgen --delete %ankeborg% <-- delete vhosts matching "ankeborg"
 [ ] Create vhostgen --dry-run
     This could be used together with --delete
         vhostgen --dry-run --delete %ankeborg.nu <- would print something like
