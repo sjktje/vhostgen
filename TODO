@@ -2,13 +2,8 @@
 [x] Create vhostgen --list %string%
 [x] Create vhostgen --delete %string%
     Example: vhostgen --delete %ankeborg% <-- delete vhosts matching "ankeborg"
-[ ] Create vhostgen --dry-run
-    This could be used together with --delete
-        vhostgen --dry-run --delete %ankeborg.nu <- would print something like
-        Would delete freebsd.ankeborg.nu
-        Would delete sjk.ankeborg.nu
-        Would delete ankeborg.nu
-        ...
+[ ] Make vhostgen --delete %string% first query the database for entries 
+    matching %string%, then ask the user which ones to delete.
 [x] Use mysql_real_escape_string() on user input going into db.
 [ ] Create vhostgen --version
 [x] Make vhostgen use syslog
