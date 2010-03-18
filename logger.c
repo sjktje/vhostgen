@@ -17,6 +17,8 @@
 #include <stdarg.h>
 #include <syslog.h>
 
+#include "logger.h"
+
 void 
 log_info(const char *fmt, ...) 
 {
