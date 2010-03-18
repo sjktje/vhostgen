@@ -27,7 +27,7 @@
  * hits RETURN, NULL is returned if user enters a dot (``.'')
  */
 char *
-getinput(const char *message, char *defvalue)
+getinput(const char *message, const char *defvalue)
 {
     char *line = NULL;
     char *p = NULL;
