@@ -125,9 +125,19 @@ main(int argc, char *argv[])
 static void 
 usage(char *progname) 
 {
-    fprintf(stderr, "USAGE: %s --add\n"
-                    "       %s --help\n", progname, progname);
-    exit(0);
+
+        fprintf(stderr, "Usage: %s [OPTION..]\n\n", progname);
+
+        fprintf(stderr, 
+                        "   -a, --add           add new vhost\n"
+                        "   -d, --delete <pat>  delete vhosts matching <pat>\n"
+                        "   -h, --help          this help text\n"
+                        "   -l, --list <pat>    list vhosts matching <pat>\n"  
+                        "   -u, --user <user>   login using provided mysql user\n"
+                        "   -v, --version       displays program version\n\n"
+                        "See http://ankeborg.nu/wiki/Vhostgen for more information.\n");
+
+        exit(1);
 }
 
     
