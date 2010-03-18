@@ -641,10 +641,6 @@ parseargs(int *argc, char ***argv)
 {
     int             ch;
     struct optlist *cmdargs;
-
-    cmdargs = optlistinit();
-    cmdargs->progname = *argv[0];
-
     static struct option options[] = {
         { "add",        no_argument,        NULL,   'a' },
         { "delete",     required_argument,  NULL,   'd' },
@@ -653,6 +649,10 @@ parseargs(int *argc, char ***argv)
         { "user",       required_argument,  NULL,   'u' },
         { "version",    no_argument,        NULL,   'v' },
     };
+
+    cmdargs = optlistinit();
+    cmdargs->progname = *argv[0];
+
 
     while ((ch = getopt_long(*argc, *argv, "ad:hl:u:v", options, NULL)) != -1) {
         switch (ch) {
