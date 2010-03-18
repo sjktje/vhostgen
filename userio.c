@@ -1,7 +1,23 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+/*
+ * Copyright (c) 2010 Svante J. Kvarnstrom <sjk@ankeborg.nu>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "userio.h"
 #include "vhostgen.h"
@@ -10,8 +26,8 @@
  * Prints message and waits for an answer. defvalue is used if user simply
  * hits RETURN, NULL is returned if user enters a dot (``.'')
  */
-char
-*getinput(const char *message, char *defvalue)
+char *
+getinput(const char *message, char *defvalue)
 {
     char *line = NULL;
     char *p = NULL;
@@ -61,7 +77,8 @@ char
 int
 getyesno(const char *message, int def)
 {
-    char *answer = getinput(message, (def == 1) ? "y" : "n");
+    char *answer;
+    answer = getinput(message, (def == 1) ? "y" : "n");
     if ((answer[0] == 'y' || answer[0] == 'Y') && answer[1] == '\0')
         return 1;
     else
@@ -83,7 +100,7 @@ perrorf(const char *fmt, ...)
 }
 
 /*
- * Print contents of a entry struct.
+ * Print contents of an entry struct.
  */
 void 
 printentry(struct entry *e)

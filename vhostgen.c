@@ -25,8 +25,8 @@
 
 #include "mysql.h"
 
-#include "userio.h"
 #include "logger.h"
+#include "userio.h"
 
 
 static char             *mkdate(void);
@@ -39,15 +39,14 @@ static int               addvhost(MYSQL, struct config_list *);
 static int               deletevhost(MYSQL, struct config_list *, char *);
 static int               generate_vhosts_conf(MYSQL, struct config_list *);
 static int               is_emptystring(char *);
+static int               listvhosts(MYSQL, struct config_list *, char *);
 static int               load_config_file(struct config_list *);
 static struct entry     *get_vhost_info(struct entry *, struct config_list *); 
 static struct entry     *mres_entry(MYSQL, struct entry *);
 static struct optlist   *optlistinit(void);
 static struct optlist   *parseargs(int *, char ***);
-static void              usage(char *);
 static void              free_entry(struct entry *); 
-void                     printentry(struct entry *);
-static int               listvhosts(MYSQL, struct config_list *, char *);
+static void              usage(char *);
 
 
 int 
@@ -132,7 +131,8 @@ usage(char *progname)
 }
 
     
-static int addvhost(MYSQL sql_conn, struct config_list *clist)
+static int 
+addvhost(MYSQL sql_conn, struct config_list *clist)
 {
     struct entry *newentry = { 0 };
     struct entry *escapedentry = { 0 };
@@ -208,7 +208,9 @@ mres_entry(MYSQL sql_conn, struct entry *newentry)
 /* 
  * Frees malloced entry struct.
  */
-static void free_entry(struct entry *e) {
+static void 
+free_entry(struct entry *e)
+{
     free(e->servername);
     free(e->servername);
     free(e->docroot);
@@ -282,23 +284,25 @@ get_vhost_info(struct entry *newentry, struct config_list *clist)
 }
 
 
-static char
-*myuser(void)
+static char * 
+myuser(void)
 {
     struct passwd *passwd;
     passwd = getpwuid(getuid());
     return passwd->pw_name;
 }
 
-static char
-*myhomedir(void)
+static char *
+myhomedir(void)
 {
     struct passwd *passwd;
     passwd = getpwuid(getuid());
     return passwd->pw_dir;
 }
 
-static int listvhosts(MYSQL sql_conn, struct config_list *clist, char *pattern) {
+static int 
+listvhosts(MYSQL sql_conn, struct config_list *clist, char *pattern) 
+{
     MYSQL_ROW    sqlrow;
     MYSQL_RES   *res_ptr = NULL;
     int          res;
@@ -338,7 +342,9 @@ static int listvhosts(MYSQL sql_conn, struct config_list *clist, char *pattern) 
     return 0;
 }
 
-static int deletevhost(MYSQL sql_conn, struct config_list *clist, char *pattern) {
+static int 
+deletevhost(MYSQL sql_conn, struct config_list *clist, char *pattern) 
+{
     char        *escaped = NULL;
     char        *query = NULL;
     int          res;
@@ -444,8 +450,10 @@ generate_vhosts_conf(MYSQL sql_conn, struct config_list *clist)
 /* 
  * Returns true if string is empty, false otherwise.
  */
-static int is_emptystring(char *string) {
-    if ((string == NULL) || (*string == '\0'))
+static int 
+is_emptystring(char *s) 
+{
+    if ((s == NULL) || (*s == '\0'))
         return 1;
     else
         return 0;
@@ -595,8 +603,8 @@ vg_asprintf(const char *fmt, ...)
 }
 
 
-static char
-*mkdate(void)
+static char *
+mkdate(void)
 {
 	struct tm *tm_ptr;
 	time_t the_time;
