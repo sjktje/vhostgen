@@ -636,30 +636,35 @@ parseargs(int *argc, char ***argv)
     cmdargs->progname = *argv[0];
 
     static struct option options[] = {
-        { "add",    no_argument,        NULL,   'a' },
-        { "help",   no_argument,        NULL,   'h' },
-        { "user",   required_argument,  NULL,   'u' },
-        { "list",   required_argument,  NULL,   'l' },
-        { "delete", required_argument,  NULL,   'd' },
+        { "add",        no_argument,        NULL,   'a' },
+        { "delete",     required_argument,  NULL,   'd' },
+        { "help",       no_argument,        NULL,   'h' },
+        { "list",       required_argument,  NULL,   'l' },
+        { "user",       required_argument,  NULL,   'u' },
+        { "version",    no_argument,        NULL,   'v' },
     };
 
-    while ((ch = getopt_long(*argc, *argv, "ahu:l:d:", options, NULL)) != -1) {
+    while ((ch = getopt_long(*argc, *argv, "ad:hl:u:v", options, NULL)) != -1) {
         switch (ch) {
         case 'a':
             cmdargs->aflag = 1;
             break;
+        case 'd':
+            cmdargs->delete = vg_strdup(optarg);
+            break;
         case 'h':
             cmdargs->hflag = 1;
-            break;
-        case 'u':
-            cmdargs->username = vg_strdup(optarg);
             break;
         case 'l':
             cmdargs->list = vg_strdup(optarg);
             break;
-        case 'd':
-            cmdargs->delete = vg_strdup(optarg);
+        case 'u':
+            cmdargs->username = vg_strdup(optarg);
             break;
+        case 'v':
+            printf("%s v%s\n", cmdargs->progname, VERSION);
+            exit(0);
+            break; /* NOT REACHED */
         default:
             usage(*argv[0]);
             break; /* NOT REACHED */

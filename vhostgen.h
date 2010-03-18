@@ -1,6 +1,8 @@
 #ifndef __vhostgen_h
 #define __vhostgen_h
 
+#define VERSION "1.0"
+
 /* Struct containing data gathered from ~/.vhostgenrc */
 struct config_list {
 	char *username;	    /* Mysql username */
@@ -34,4 +36,4 @@ struct entry {
     char *port;         /* Port (80) */
 };
 
-#endif
+#endif /* __vhostgen_h */

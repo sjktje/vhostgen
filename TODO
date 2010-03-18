@@ -5,5 +5,5 @@
 [ ] Make vhostgen --delete %string% first query the database for entries 
     matching %string%, then ask the user which ones to delete.
 [x] Use mysql_real_escape_string() on user input going into db.
-[ ] Create vhostgen --version
+[x] Create vhostgen --version
 [x] Make vhostgen use syslog
